@@ -4,19 +4,19 @@ namespace App\Models;
 
 use App\Models\Contact;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class User extends Model
+class Address extends Model
 {
     // use HasFactory;
-    protected $table = "users";
+    protected $table = "addresses";
     protected $primaryKey = "id";
     protected $keyType = "int";
-    public $timestamps = true;
     public $incrementing = true;
+    public $timestamps = true;
 
-    public function contacts(): HasMany {
-        return $this->hasMany(Contact::class, "user_id", "id");
+    public function contac(): BelongsTo {
+        return $this->belongsTo(Contact::class, "contact_id", "id");
     }
 }
