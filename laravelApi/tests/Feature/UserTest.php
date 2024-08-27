@@ -80,13 +80,13 @@ class UserTest extends TestCase
                     'name' => 'test',
                 ]
             ]);
-        
-        
+
+
         $user = User::where('username', 'test')->first();
         self::assertNotNull($user->token);
     }
 
-    public function testLoginFailedUsernameNotFound() 
+    public function testLoginFailedUsernameNotFound()
     {
         $this->post('/api/users/login', [
             'username' => 'test',
@@ -101,7 +101,7 @@ class UserTest extends TestCase
             ]);
     }
 
-    public function testLoginFailedPasswordWrong() 
+    public function testLoginFailedPasswordWrong()
     {
         $this->seed([UserSeeder::class]);
         $this->post('/api/users/login', [
@@ -112,6 +112,54 @@ class UserTest extends TestCase
                 'errors' => [
                     'message' => [
                         "username or password wrong"
+                    ]
+                ]
+            ]);
+    }
+
+    public function testGetSuccess()
+    {
+        $this->seed([UserSeeder::class]);
+
+        $this->get('/api/users/current', [
+            'Authorization' => 'test',
+        ])->assertStatus(200)
+            ->assertJson([
+                'data' => [
+                    'username' => 'test',
+                    'name' => 'test'
+                ]
+            ]);
+    }
+
+    // test mengirimkan token kosong / tanpa token
+    public function testGetUnauthorized() 
+    {
+        $this->seed([UserSeeder::class]);
+
+        $this->get('/api/users/current')
+            ->assertStatus(401)
+            ->assertJson([
+                'errors' => [
+                    'message' => [
+                        'unauthorized'
+                    ]
+                ]
+            ]);
+    }
+
+    // test mengirimkan token salah
+    public function testGetInvalidToken() 
+    {
+        $this->seed([UserSeeder::class]);
+
+        $this->get('/api/users/current', [
+            'Authorization' => 'salah',
+        ])->assertStatus(401)
+            ->assertJson([
+                'errors' => [
+                    'message' => [
+                        'unauthorized'
                     ]
                 ]
             ]);

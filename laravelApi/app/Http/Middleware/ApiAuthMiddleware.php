@@ -30,13 +30,13 @@ class ApiAuthMiddleware
         $user = User::where('token', $token)->first();
         if (!$user) {
             $authenticate = false;
+        } else {
+            Auth::login($user);
         }
-
-        Auth::login($user);
 
         // jika terautentikasi tokennya
         if ($authenticate) {
-            return next($request);
+            return $next($request);
         } else {
             return response()->json([
                 "errors" => [
