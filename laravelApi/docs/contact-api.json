@@ -193,7 +193,7 @@
                     }
                 },
                 "responses": {
-                    "200": {
+                    "201": {
                         "description": "Success update contact",
                         "content": {
                             "application/json": {
