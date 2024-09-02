@@ -8,6 +8,8 @@ use Database\Seeders\UserSeeder;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
+use function PHPUnit\Framework\assertNotEquals;
+
 class UserTest extends TestCase
 {
     /**
@@ -133,7 +135,7 @@ class UserTest extends TestCase
     }
 
     // test mengirimkan token kosong / tanpa token
-    public function testGetUnauthorized() 
+    public function testGetUnauthorized()
     {
         $this->seed([UserSeeder::class]);
 
@@ -149,7 +151,7 @@ class UserTest extends TestCase
     }
 
     // test mengirimkan token salah
-    public function testGetInvalidToken() 
+    public function testGetInvalidToken()
     {
         $this->seed([UserSeeder::class]);
 
@@ -160,6 +162,87 @@ class UserTest extends TestCase
                 'errors' => [
                     'message' => [
                         'unauthorized'
+                    ]
+                ]
+            ]);
+    }
+
+    public function testUpdatePasswordSuccess()
+    {
+        $this->seed([UserSeeder::class]);
+        
+        // check user sebelum update 
+        $oldUser = User::where('username', 'test')->first();
+
+        $this->patch(
+            '/api/users/current',
+            [
+                'password' => 'baru'
+            ],
+            [
+                'Authorization' => 'test'
+            ]
+        )->assertStatus(200)
+            ->assertJson([
+                'data' => [
+                    'username' => 'test',
+                    'name' => 'test',
+                ]
+            ]);
+
+        $newUser = User::where('username', 'test')->first();
+        
+        // pastikan password lama dan baru tidak sama 
+        self::assertNotEquals($oldUser->password, $newUser->password);
+    }
+
+    public function testUpdateNameSuccess() {
+        $this->seed([UserSeeder::class]);
+        
+        // check user sebelum update 
+        $oldUser = User::where('username', 'test')->first();
+
+        $this->patch(
+            '/api/users/current',
+            [
+                'name' => 'Rifki'
+            ],
+            [
+                'Authorization' => 'test'
+            ]
+        )->assertStatus(200)
+            ->assertJson([
+                'data' => [
+                    'username' => 'test',
+                    'name' => 'Rifki',
+                ]
+            ]);
+
+        $newUser = User::where('username', 'test')->first();
+        
+        // pastikan name lama dan baru tidak sama 
+        self::assertNotEquals($oldUser->name, $newUser->name);
+    }
+
+    public function testUpdateFailedNameExceeds() {
+        $this->seed([UserSeeder::class]);
+        
+        // check user sebelum update 
+        $oldUser = User::where('username', 'test')->first();
+
+        $this->patch(
+            '/api/users/current',
+            [
+                'name' => 'RifkiRifkiRifkiRifkiRifkiRifkiRifkiRifkiRifkiRifkiRifkiRifkiRifkiRifkiRifkiRifkiRifkiRifkiRifkiRifkiRifkiRifkiRifkiRifkiRifkiRifkiRifkiRifkiRifkiRifkiRifkiRifkiRifkiRifkiRifkiRifkiRifkiRifkiRifkiRifkiRifkiRifkiRifkiRifkiRifkiRifkiRifkiRifkiRifkiRifkiRifkiRifkiRifkiRifkiRifkiRifkiRifkiRifkiRifkiRifkiRifkiRifkiRifkiRifkiRifkiRifkiRifkiRifkiRifkiRifkiRifkiRifkiRifkiRifkiRifkiRifkiRifkiRifkiRifkiRifkiRifkiRifkiRifkiRifkiRifkiRifkiRifkiRifkiRifkiRifkiRifkiRifkiRifkiRifkiRifkiRifkiRifkiRifkiRifkiRifkiRifkiRifkiRifkiRifkiRifkiRifkiRifkiRifkiRifkiRifkiRifkiRifkiRifkiRifkiRifkiRifkiRifkiRifkiRifkiRifkiRifki'
+            ],
+            [
+                'Authorization' => 'test'
+            ]
+        )->assertStatus(400)
+            ->assertJson([
+                'errors' => [
+                    'name' => [
+                        'The name field must not be greater than 100 characters.'
                     ]
                 ]
             ]);

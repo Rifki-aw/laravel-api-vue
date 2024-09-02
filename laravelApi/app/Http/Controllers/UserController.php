@@ -10,6 +10,7 @@ use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\UserLoginRequest;
 use App\Http\Requests\UserRegisterRequest;
+use App\Http\Requests\UserUpdateRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Support\Facades\Auth;
 
@@ -66,6 +67,27 @@ class UserController extends Controller
     {
         // dapatkan siapa user yang saat ini sedang login
         $user = Auth::user();
+        return new UserResource($user);
+    }
+
+    public function update(UserUpdateRequest $request): UserResource
+    {
+        $data = $request->validated();
+
+        // ambil user saat ini yang sedang login
+        $user = Auth::user();
+
+        // check jika data ada name, maka ubah name
+        if (isset($data['name'])) {
+            $user->name = $data['name'];
+        }
+
+        // check jika data ada password, maka ubah password
+        if (isset($data['password'])) {
+            $user->password = Hash::make($data['password']);
+        }
+
+        $user->save();
         return new UserResource($user);
     }
 }
