@@ -157,7 +157,8 @@ class ContactTest extends TestCase
             ]);
     }
 
-    public function testUpdateValidationError() {
+    public function testUpdateValidationError()
+    {
         $this->seed([UserSeeder::class, ContactSeeder::class]);
         $contact = Contact::query()->limit(1)->first();
 
@@ -173,6 +174,36 @@ class ContactTest extends TestCase
                 "errors" => [
                     'first_name' => [
                         'The first name field is required.'
+                    ]
+                ]
+            ]);
+    }
+
+    public function testDeleteSuccess()
+    {
+        $this->seed([UserSeeder::class, ContactSeeder::class]);
+        $contact = Contact::query()->limit(1)->first();
+
+        $this->delete('/api/contacts/' . $contact->id, [], [
+            'Authorization' => 'test',
+        ])->assertStatus(200)
+            ->assertJson([
+                "data" => true
+            ]);
+    }
+
+    public function testDeleteNotFound()
+    {
+        $this->seed([UserSeeder::class, ContactSeeder::class]);
+        $contact = Contact::query()->limit(1)->first();
+
+        $this->delete('/api/contacts/' . ($contact->id + 1), [], [
+            'Authorization' => 'test',
+        ])->assertStatus(404)
+            ->assertJson([
+                "errors" => [
+                    "message" => [
+                        'not found'
                     ]
                 ]
             ]);

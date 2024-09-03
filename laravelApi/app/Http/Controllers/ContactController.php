@@ -10,6 +10,7 @@ use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Symfony\Component\HttpKernel\Event\ResponseEvent;
 
 class ContactController extends Controller
 {
@@ -73,5 +74,27 @@ class ContactController extends Controller
         $contact->save();
 
         return new ContactResource($contact);
+    }
+
+    public function delete(int $id): JsonResponse
+    {
+        $user = Auth::user();
+        $contact = Contact::where('id', $id)->where('user_id', $user->id)->first();
+
+        // cek jika data contact tidak ada di DB
+        if (!$contact) {
+            throw new HttpResponseException(response()->json([
+                "errors" => [
+                    "message" => [
+                        "not found"
+                    ]
+                ]
+            ])->setStatusCode(404));
+        }
+
+        $contact->delete();
+        return response()->json([
+            "data" => true
+        ])->setStatusCode(200);
     }
 }
