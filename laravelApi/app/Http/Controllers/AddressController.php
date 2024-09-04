@@ -9,6 +9,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\AddressResource;
 use App\Http\Requests\AddressCreateRequest;
+use App\Http\Requests\AddressUpdateRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
 class AddressController extends Controller
@@ -84,6 +85,24 @@ class AddressController extends Controller
 
         // Ambil data address yang sesuai dengan contact
         $address = $this->getAddress($contact, $idAddress);
+
+        return new AddressResource($address);
+    }
+
+    public function update(int $idContact, int $idAddress, AddressUpdateRequest $request): AddressResource 
+    {
+        // Cek dan ambil user yang sedang login
+        $user = Auth::user();
+
+        // Ambil data contact yang sesuai dengan user yang sedang login dan ID contact yang diberikan
+        $contact = $contact = $this->getContact($user, $idContact);
+
+        // Ambil data address yang sesuai dengan contact
+        $address = $this->getAddress($contact, $idAddress);
+
+        $data = $request->validated();
+        $address->fill($data);
+        $address->save();
 
         return new AddressResource($address);
     }
