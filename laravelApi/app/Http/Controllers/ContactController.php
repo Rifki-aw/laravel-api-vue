@@ -111,7 +111,7 @@ class ContactController extends Controller
 
         $contacts = Contact::query()->where('user_id', $user->id);
 
-        $contacs = Contact::where(function (Builder $builder) use ($request) {
+        $contacts = Contact::where(function (Builder $builder) use ($request) {
             // jika ada request berdasarkan name
             $name = $request->input('name');
             if ($name) {
@@ -136,8 +136,8 @@ class ContactController extends Controller
         });
 
         // setelah dicek lalu ambil melalui pagination
-        $contacts->paginate(perPage: $size, page: $page);
+        $contacts = $contacts->paginate(perPage: $size, page: $page);
 
-        return new ContactCollection($contacs);
+        return new ContactCollection($contacts);
     }
 }
