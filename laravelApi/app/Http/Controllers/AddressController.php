@@ -123,4 +123,17 @@ class AddressController extends Controller
             "data" => true
         ])->setStatusCode(200);
     }
+
+    public function list(int $idContact): JsonResponse
+    {
+        // Cek dan ambil user yang sedang login
+        $user = Auth::user();
+
+        // Ambil data contact yang sesuai dengan user yang sedang login dan ID contact yang diberikan
+        $contact = $contact = $this->getContact($user, $idContact);
+
+        $addresses = Address::where('contact_id', $contact->id)->get();
+
+        return (AddressResource::collection($addresses))->response()->setStatusCode(200);
+    }
 }
