@@ -111,7 +111,7 @@ class ContactController extends Controller
 
         $contacts = Contact::query()->where('user_id', $user->id);
 
-        $contacts = Contact::where(function (Builder $builder) use ($request) {
+        $contacts = $contacts->where(function (Builder $builder) use ($request) {
             // jika ada request berdasarkan name
             $name = $request->input('name');
             if ($name) {
@@ -139,5 +139,27 @@ class ContactController extends Controller
         $contacts = $contacts->paginate(perPage: $size, page: $page);
 
         return new ContactCollection($contacts);
+
+        // VERSI GPT
+        // $contacts = Contact::where('user_id', $user->id);
+
+        // tambahkan kondisi pencarian berdasarkan nama, email, dan telepon
+        // $contacts = $contacts->when($request->input('name'), function (Builder $builder, $name) {
+        //     $builder->where(function (Builder $builder) use ($name) {
+        //         $builder->orWhere('first_name', 'like', '%' . $name . '%')
+        //             ->orWhere('last_name', 'like', '%' . $name . '%');
+        //     });
+        // })
+        //     ->when($request->input('email'), function (Builder $builder, $email) {
+        //         $builder->where('email', 'like', '%' . $email . '%');
+        //     })
+        //     ->when($request->input('phone'), function (Builder $builder, $phone) {
+        //         $builder->where('phone', 'like', '%' . $phone . '%');
+        //     });
+
+        // // ambil melalui pagination
+        // $contacts = $contacts->paginate(perPage: $size, page: $page);
+
+        // return new ContactCollection($contacts);
     }
 }
