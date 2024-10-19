@@ -2,9 +2,12 @@
     <div>
         <nav class="navbar navbar-expand-lg bg-dark" data-bs-theme="dark">
             <div class="container">
-                <router-link :to="{ name: 'dashboard' }" class="navbar-brand"
-                    >DASHBOARD</router-link
-                >
+                <router-link :to="{ name: 'dashboard' }" class="navbar-brand" v-if="loggedIn">
+                  KONTAKAN
+                </router-link>
+                <router-link :to="{ name: 'login' }" class="navbar-brand" v-if="!loggedIn">
+                  KONTAKAN
+                </router-link>
                 <button
                     class="navbar-toggler"
                     type="button"

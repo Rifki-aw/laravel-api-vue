@@ -59,6 +59,9 @@ function logout() {
                                     class="list-group-item text-dark text-decoration-none"
                                     >DASHBOARD</router-link
                                 >
+                                <router-link :to="{ name: 'contact' }" class="list-group-item text-dark text-decoration-none">
+                                    CONTACT
+                                </router-link>
                                 <li
                                     @click="logout"
                                     class="list-group-item text-dark text-decoration-none"
