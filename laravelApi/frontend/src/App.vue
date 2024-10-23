@@ -63,7 +63,6 @@ export default {
     mounted() {
         if (this.loggedIn) {
             this.getUserData();
-            this.$router.push({ name: "dashboard" });
         }
     },
     methods: {
