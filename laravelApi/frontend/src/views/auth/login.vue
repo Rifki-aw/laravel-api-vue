@@ -1,4 +1,55 @@
-<script setup></script>
+<script setup>
+import { ref, onMounted, defineEmits } from "vue";
+import api from "../../api";
+import { useRouter } from "vue-router";
+
+const router = useRouter();
+
+const loggedIn = ref(localStorage.getItem("loggedIn"));
+const user = ref([]);
+const validation = ref([]);
+const loginFailed = ref(null);
+
+const emit = defineEmits(["login"]);
+
+const login = async () => {
+    try {
+        const response = await api.post("/api/users/login", {
+            username: user.value.username,
+            password: user.value.password,
+        });
+
+        if (response.data.data.token) {
+            localStorage.setItem("loggedIn", "true");
+            localStorage.setItem("token", response.data.data.token);
+
+            emit("login");
+            router.push({ name: "dashboard" });
+        }
+    } catch (error) {
+        if (error.response.status === 401) {
+            loginFailed.value = true;
+        } else {
+            console.log(error);
+        }
+    }
+
+    validation.value = [];
+
+    if (!user.value.username) {
+        validation.value.username = true;
+    }
+    if (!user.value.password) {
+        validation.value.password = true;
+    }
+};
+
+onMounted(() => {
+    if (loggedIn.value) {
+        router.push({ name: "dashboard" });
+    }
+});
+</script>
 
 <template>
     <div class="login">
@@ -17,7 +68,7 @@
                                     <label for="username">USERNAME</label>
                                     <input
                                         type="text"
-                                        class="form-control"
+                                        class="form-control mb-2"
                                         placeholder="Masukkan Username"
                                         v-model="user.username"
                                     />
@@ -44,10 +95,14 @@
                                         Masukkan Password
                                     </div>
                                 </div>
-
-                                <button type="submit" class="btn btn-primary">
-                                    LOGIN
-                                </button>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <button type="submit" class="btn btn-primary mt-3">
+                                        LOGIN
+                                    </button>
+                                    <div class="text-center mt-3">
+                                        <a href="" class="text-muted text-decoration-none">Register</a>
+                                    </div>
+                                </div>
                             </form>
                         </div>
                     </div>
@@ -57,7 +112,7 @@
     </div>
 </template>
 
-<script>
+<!-- <script>
 import api from "../../api";
 
 export default {
@@ -92,11 +147,11 @@ export default {
 
                         // change state
                         // this.loggedIn = true;
-                        this.$emit('login');
+                        this.$emit("login");
 
                         // redirect ke dashboard
                         return this.$router.push({ name: "dashboard" });
-                    } 
+                    }
                     // else {
                     //     // set state login failed
                     //     this.loginFailed = true;
@@ -127,4 +182,4 @@ export default {
         },
     },
 };
-</script>
+</script> -->
