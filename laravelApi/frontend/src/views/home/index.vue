@@ -7,18 +7,27 @@ import { useRouter } from "vue-router";
 const router = useRouter();
 
 const token = ref(localStorage.getItem("token"));
+const loggedIn = ref(localStorage.getItem("loggedIn"));
 const user = ref({});
 
-const emit = defineEmits(['logout']);
+const emit = defineEmits(["logout"]);
 
 onMounted(async () => {
+    if (!loggedIn.value) {
+        router.push({ name: "login" });
+        console.log(loggedIn.value);
+    }
     try {
         const response = await api.get("/api/users/current", {
             headers: { Authorization: token.value },
         });
         user.value = response.data.data;
     } catch (error) {
-        console.log(error);
+        if (error.response.status === 401) {
+            router.push({ name: "login" });
+        } else {
+            console.log(error);
+        }
     }
 });
 
@@ -33,7 +42,7 @@ function logout() {
             localStorage.removeItem("token");
             localStorage.removeItem("loggedIn");
 
-            emit('logout');
+            emit("logout");
 
             // redirect to login page
             router.push({ name: "login" });
@@ -59,7 +68,10 @@ function logout() {
                                     class="list-group-item text-dark text-decoration-none"
                                     >DASHBOARD</router-link
                                 >
-                                <router-link :to="{ name: 'contact' }" class="list-group-item text-dark text-decoration-none">
+                                <router-link
+                                    :to="{ name: 'contact' }"
+                                    class="list-group-item text-dark text-decoration-none"
+                                >
                                     CONTACT
                                 </router-link>
                                 <li

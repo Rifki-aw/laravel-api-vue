@@ -61,6 +61,20 @@ onMounted(() => {
                     </div>
                     <div class="card">
                         <div class="card-body">
+                            <div v-if="$route.query.redirect">
+                                <div
+                                    class="alert alert-warning alert-dismissible fade show"
+                                    role="alert"
+                                >
+                                    <strong>Peringatan!</strong> Anda harus
+                                    login dahulu.<button
+                                        type="button"
+                                        class="btn-close"
+                                        data-bs-dismiss="alert"
+                                        aria-label="Close"
+                                    ></button>
+                                </div>
+                            </div>
                             LOGIN
                             <hr />
                             <form @submit.prevent="login">
@@ -95,12 +109,21 @@ onMounted(() => {
                                         Masukkan Password
                                     </div>
                                 </div>
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <button type="submit" class="btn btn-primary mt-3">
+                                <div
+                                    class="d-flex justify-content-between align-items-center"
+                                >
+                                    <button
+                                        type="submit"
+                                        class="btn btn-primary mt-3"
+                                    >
                                         LOGIN
                                     </button>
                                     <div class="text-center mt-3">
-                                        <a href="" class="text-muted text-decoration-none">Register</a>
+                                        <router-link
+                                            :to="{ name: 'register' }"
+                                            class="nav-link"
+                                            >Register</router-link
+                                        >
                                     </div>
                                 </div>
                             </form>
