@@ -32,8 +32,12 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
-    if (to.name === "login" && localStorage.getItem("loggedIn")) {
-        next({ name: "dashboard" });
+    if (to.name === "login" || to.name === "register" ) {
+        if (localStorage.getItem("loggedIn")) {
+            next({ name: "dashboard" });
+        } else {
+            next();
+        }
     } else if (to.meta.requiresAuth && !localStorage.getItem("loggedIn")) {
         next({ name: "login", query: { redirect: to.path } });
     } else {
