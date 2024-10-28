@@ -44,11 +44,11 @@ const login = async () => {
     }
 };
 
-onMounted(() => {
-    if (loggedIn.value) {
-        router.push({ name: "dashboard" });
-    }
-});
+// onMounted(() => {
+//     if (loggedIn.value) {
+//         router.push({ name: "dashboard" });
+//     }
+// });
 </script>
 
 <template>
