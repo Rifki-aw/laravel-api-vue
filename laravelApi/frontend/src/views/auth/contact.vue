@@ -138,7 +138,13 @@ function logout() {
                                             <td>{{ contact.last_name }}</td>
                                             <td>{{ contact.email }}</td>
                                             <td>{{ contact.phone }}</td>
-                                            <td></td>
+                                            <td class="text-center">
+                                                <router-link 
+                                                v-if="contact.id"
+                                                :to="{ name: 'edit', params: {id: contact.id } }" class="btn btn-sm btn-primary rounded-sm shadow border-0 me-2">
+                                                    EDIT
+                                                </router-link>
+                                            </td>
                                         </tr>
                                     </tbody>
                                 </table>
