@@ -14,6 +14,12 @@ const routes = [
         meta: { requiresAuth: true },
     },
     {
+        path: "/create",
+        name: "create",
+        component: () => import("../views/auth/contact/create.vue"),
+        meta: { requiresAuth: true },
+    },
+    {
         path: "/register",
         name: "register",
         component: () => import("../views/auth/register.vue"),
@@ -32,7 +38,7 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
-    if (to.name === "login" || to.name === "register" ) {
+    if (to.name === "login" || to.name === "register") {
         if (localStorage.getItem("loggedIn")) {
             next({ name: "dashboard" });
         } else {

@@ -108,11 +108,9 @@ function logout() {
                             <div class="container">
                                 <div class="row py-2">
                                     <div class="col-md-6">
-                                        <h2>
-                                            <a href="" class="btn btn-success"
-                                                >Add New Contact</a
-                                            >
-                                        </h2>
+                                        <router-link :to="{ name: 'create' }" class="btn btn-md btn-success rounded shadow border-0 mb-3">
+                                            Add New Contact
+                                        </router-link>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
