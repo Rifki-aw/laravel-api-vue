@@ -66,6 +66,20 @@ function logout() {
             console.error("Logout failed:", error);
         });
 }
+
+async function deleteContact(id) {
+    try {
+        if (confirm("Anda yakin ingin menghapus kontak ini?")) {
+            await api.delete(`api/contacts/${id}`, {
+                headers: { Authorization: token.value },
+            });
+            fetchDataContacts();
+        }
+    } catch (error) {
+        console.error("Delete failed:", error);
+    }
+}
+
 </script>
 
 <template>
@@ -120,7 +134,7 @@ function logout() {
                                 </div>
 
                                 <table class="table table-bordered">
-                                    <thead>
+                                    <thead class="text-center">
                                         <tr>
                                             <th>Firstname</th>
                                             <th>Lastname</th>
@@ -144,6 +158,14 @@ function logout() {
                                                 :to="{ name: 'edit', params: {id: contact.id } }" class="btn btn-sm btn-primary rounded-sm shadow border-0 me-2">
                                                     EDIT
                                                 </router-link>
+                                                <button 
+                                                v-if="contact.id"
+                                                @click="deleteContact(contact.id)" class="btn btn-sm btn-danger rounded-sm shadow border-0 me-2">
+                                                    DELETE
+                                                </button>
+                                                <button class="btn btn-sm btn-warning rounded-sm shadow border-0">
+                                                    DETAIL
+                                                </button>
                                             </td>
                                         </tr>
                                     </tbody>
