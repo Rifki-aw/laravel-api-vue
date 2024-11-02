@@ -163,9 +163,12 @@ async function deleteContact(id) {
                                                 @click="deleteContact(contact.id)" class="btn btn-sm btn-danger rounded-sm shadow border-0 me-2">
                                                     DELETE
                                                 </button>
-                                                <button class="btn btn-sm btn-warning rounded-sm shadow border-0">
+                                                <router-link 
+                                                v-if="contact.id"
+                                                :to="{ name: 'address-index', params: {id: contact.id } }"
+                                                class="btn btn-sm btn-warning rounded-sm shadow border-0">
                                                     DETAIL
-                                                </button>
+                                                </router-link>
                                             </td>
                                         </tr>
                                     </tbody>

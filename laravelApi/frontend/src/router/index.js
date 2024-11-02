@@ -35,6 +35,12 @@ const routes = [
         name: "login",
         component: () => import("../views/auth/login.vue"),
     },
+    {
+        path: "/contact/:id/address",
+        name: "address-index",
+        component: () => import("../views/auth/address/index.vue"),
+        meta: { requiresAuth: true },
+    }
 ];
 
 // create router

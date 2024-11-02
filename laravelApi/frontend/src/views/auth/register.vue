@@ -21,7 +21,7 @@ const register = async () => {
             password: user.password,
             name: user.name,
         });
-        console.log(response.data);
+        // console.log(response.data);
         router.push({ name: "login" });
     } catch (error) {
         if (error.response.status === 400) {
