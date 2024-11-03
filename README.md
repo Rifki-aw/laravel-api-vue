@@ -1,1 +1,1 @@
-Series Laravel 1 dan VUE 3 
+Series Laravel 10 dan VUE 3 
