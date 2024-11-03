@@ -1,20 +1,13 @@
 <script setup>
 import { onMounted, ref } from "vue";
-import { useRoute, useRouter } from "vue-router";
+import { useRoute } from "vue-router";
 import Api from "../../../api";
 
 const route = useRoute();
-const router = useRouter();
 const token = ref(localStorage.getItem("token"));
 const emit = defineEmits(['logout']);
 
-const addresses = ref({
-    street: "",
-    city: "",
-    province: "",
-    country: "",
-    postal_code: "",
-});
+const addresses = ref([]);
 // const errors = ref([]);
 
 const fetchDataAddress = async () => {
@@ -25,6 +18,7 @@ const fetchDataAddress = async () => {
             }
         });
         addresses.value = response.data.data;
+        // console.log(addresses.value);
     } catch (error) {
         console.error("Failed to fetch address: ", error);
     }
@@ -34,28 +28,19 @@ onMounted(() => {
     fetchDataAddress();
 })
 
-function logout() {
-    // Melakukan request delete ke endpoint logout API
-    Api.delete("/api/users/logout", {
-        headers: { Authorization: token.value },
-    })
-        .then((response) => {
-            console.log("Logout success:", response.data.data);
-
-            // Menghapus token dan status login dari localStorage
-            localStorage.removeItem("token");
-            localStorage.removeItem("loggedIn");
-
-            // Emit event logout untuk memberi tahu komponen lain bahwa user telah logout
-            emit("logout");
-
-            // Redirect user ke halaman login menggunakan router
-            router.push({ name: "login" });
-        })
-        .catch((error) => {
-            console.error("Logout failed:", error);
-        });
+async function deleteAddress(contact_id, address_id) {
+    try {
+        if (confirm("Anda yakin ingin menghapus kontak ini?")) {
+            await Api.delete(`/api/contacts/${contact_id}/addresses/${address_id}`, {
+                headers: { Authorization: token.value }
+            });
+            fetchDataAddress();
+        }
+    } catch (error) {
+        console.error("Delete failed:", error);
+    }
 }
+
 </script>
 
 <template>
@@ -98,12 +83,12 @@ function logout() {
                             <div class="container">
                                 <div class="row py-2">
                                     <div class="col-md-6">
-                                        <!-- <router-link
-                                            :to="{ name: 'create' }"
+                                        <router-link
+                                            :to="{ name: 'address-create' }"
                                             class="btn btn-md btn-success rounded shadow border-0 mb-3"
                                         >
                                             Add New Address
-                                        </router-link> -->
+                                        </router-link>
                                     </div>
                                 </div>
 
@@ -134,41 +119,26 @@ function logout() {
                                             <td>{{ address.country }}</td>
                                             <td>{{ address.postal_code }}</td>
                                             <td class="text-center">
-                                                <!-- <router-link
-                                                    v-if="contact.id"
+                                                <router-link
+                                                    v-if="address.id && route.params.id"
                                                     :to="{
-                                                        name: 'edit',
+                                                        name: 'address-edit',
                                                         params: {
-                                                            id: contact.id,
+                                                            id: route.params.id,
+                                                            idAddress: address.id
                                                         },
                                                     }"
                                                     class="btn btn-sm btn-primary rounded-sm shadow border-0 me-2"
                                                 >
                                                     EDIT
-                                                </router-link> -->
-                                                <!-- <button
-                                                    v-if="contact.id"
-                                                    @click="
-                                                        deleteContact(
-                                                            contact.id
-                                                        )
-                                                    "
+                                                </router-link>
+                                                <button
+                                                    v-if="address.id"
+                                                    @click="deleteAddress(route.params.id, address.id)"
                                                     class="btn btn-sm btn-danger rounded-sm shadow border-0 me-2"
                                                 >
                                                     DELETE
-                                                </button> -->
-                                                <!-- <router-link
-                                                    v-if="contact.id"
-                                                    :to="{
-                                                        name: 'address-index',
-                                                        params: {
-                                                            id: contact.id,
-                                                        },
-                                                    }"
-                                                    class="btn btn-sm btn-warning rounded-sm shadow border-0"
-                                                >
-                                                    DETAIL
-                                                </router-link> -->
+                                                </button>
                                             </td>
                                         </tr>
                                     </tbody>
